@@ -25,12 +25,27 @@ import { makeArray } from './_make-array';
       textArr.push(obj);
 
       // 文字を加工する処理
-      const text = r.textContent;
+      const text = r.innerHTML;
+      const result = text.split('<br>');
+      const resultText = [];
 
       r.innerHTML = null;
 
-      text.split('').forEach(c => {
-        r.innerHTML += `<div class="text-splite-wrap"><span class="text-splite">${c}</span></div>`;
+      result.forEach((rr, ii) => {
+        let result = '';
+
+        rr.split('').forEach(t => {
+          if (t === ' ') {
+            t = '&nbsp;';
+          }
+          result = `${result}<div class="js-text-inner"><span class="js-text">${t}</span></div>`;
+        });
+
+        resultText[ii] = result;
+      });
+
+      resultText.forEach(c => {
+        r.innerHTML += `<div class="js-text-wrap">${c}</div>`;
       });
     });
 
@@ -42,11 +57,11 @@ import { makeArray } from './_make-array';
       textArr.forEach(obj => {
         if (scrollTop >= obj.top && !obj.isActive) {
           obj.isActive = true;
-          const $$texts = obj.el.querySelectorAll('.text-splite');
+          const $$texts = obj.el.querySelectorAll('.js-text');
 
           // 文字一つ一つにクラスを装着
           makeArray($$texts).forEach((r, i) =>
-            window.setTimeout(() => r.classList.add('isActive'), i * 30)
+            window.setTimeout(() => r.classList.add('display'), i * 30)
           );
         }
       });
